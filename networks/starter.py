@@ -103,6 +103,6 @@ def main():
         train(model, device, train_loader, optimizer, epoch, log_interval)
         test(model, device, test_loader)
 
-    torch.save(model.state_dict(), "trained_networks/trained_starter")
+    torch.save({'epoch': epoch, 'model_state_dict': model.state_dict(), 'optimizer_state_dict': optimizer.state_dict()}, "trained_networks/trained_starter")
 if __name__ == '__main__':
     main()
