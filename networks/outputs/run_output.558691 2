@@ -1,0 +1,105 @@
+	 classifier.6.weight
+	 classifier.6.bias
+Epoch 0/24
+----------
+train Loss: 2.2340 Acc: 0.5527
+val Loss: 0.5953 Acc: 0.8616
+
+Epoch 1/24
+----------
+train Loss: 2.4256 Acc: 0.5747
+val Loss: 0.5950 Acc: 0.8677
+
+Epoch 2/24
+----------
+train Loss: 2.5545 Acc: 0.5758
+val Loss: 0.6106 Acc: 0.8810
+
+Epoch 3/24
+----------
+train Loss: 2.6379 Acc: 0.5817
+val Loss: 1.3295 Acc: 0.8137
+
+Epoch 4/24
+----------
+train Loss: 2.6129 Acc: 0.5833
+val Loss: 1.6823 Acc: 0.7710
+
+Epoch 5/24
+----------
+train Loss: 2.6500 Acc: 0.5862
+val Loss: 0.8515 Acc: 0.8412
+
+Epoch 6/24
+----------
+train Loss: 2.6633 Acc: 0.5833
+val Loss: 1.1491 Acc: 0.8198
+
+Epoch 7/24
+----------
+train Loss: 2.6528 Acc: 0.5843
+val Loss: 1.0816 Acc: 0.8220
+
+Epoch 8/24
+----------
+train Loss: 2.6566 Acc: 0.5882
+val Loss: 0.8509 Acc: 0.8535
+
+Epoch 9/24
+----------
+train Loss: 2.6986 Acc: 0.5874
+val Loss: 1.1734 Acc: 0.8027
+
+Epoch 10/24
+----------
+train Loss: 2.6768 Acc: 0.5890
+val Loss: 0.6255 Acc: 0.8718
+
+Epoch 11/24
+----------
+train Loss: 2.6918 Acc: 0.5901
+val Loss: 0.7688 Acc: 0.8542
+
+Epoch 12/24
+----------
+train Loss: 2.6827 Acc: 0.5897
+val Loss: 1.3248 Acc: 0.7997
+
+Epoch 13/24
+----------
+train Loss: 2.6369 Acc: 0.5869
+val Loss: 0.9146 Acc: 0.8346
+
+Epoch 14/24
+----------
+train Loss: 2.7261 Acc: 0.5873
+val Loss: 0.7330 Acc: 0.8666
+
+Epoch 15/24
+----------
+train Loss: 2.6935 Acc: 0.5893
+val Loss: 0.9535 Acc: 0.8467
+
+Epoch 16/24
+----------
+train Loss: 2.7101 Acc: 0.5875
+val Loss: 0.7412 Acc: 0.8714
+
+Epoch 17/24
+----------
+train Loss: 2.6727 Acc: 0.5863
+val Loss: 0.5899 Acc: 0.8872
+
+Epoch 18/24
+----------
+train Loss: 2.7106 Acc: 0.5845
+val Loss: 1.0295 Acc: 0.8252
+
+Epoch 19/24
+----------
+train Loss: 2.6212 Acc: 0.5877
+val Loss: 0.6430 Acc: 0.8760
+
+Epoch 20/24
+----------
+train Loss: 2.6891 Acc: 0.5888
