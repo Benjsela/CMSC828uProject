@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[22]:
+# In[1]:
 
 
 import matplotlib.pyplot as plt
@@ -18,7 +18,7 @@ import torch.nn as nn
 import numpy as np
 
 
-# In[23]:
+# In[2]:
 
 
 # Run if on a Mac
@@ -26,7 +26,7 @@ import os
 os.environ['KMP_DUPLICATE_LIB_OK']='True'
 
 
-# In[24]:
+# In[3]:
 
 
 # image = load_image('adorable_puppy.jpg')
@@ -47,7 +47,7 @@ os.environ['KMP_DUPLICATE_LIB_OK']='True'
 #     img = apply_transforms(image)
 
 
-# In[31]:
+# In[4]:
 
 
 
@@ -146,15 +146,7 @@ class Backprop:
             if torch.cuda.is_available() and use_gpu:
                 target = target.to('cuda')
 
-            if (target_class is not None) and (top_class != target_class):
-                warnings.warn(UserWarning(
-                    f'The predicted class index {top_class.item()} does not' +
-                    f'equal the target class index {target_class}. ' +
-                    'Calculating the gradient w.r.t. the predicted class.'
-                ))
-
             # Set the element at top class index to be 1
-
             target[0][top_class] = 1
 
         # Calculate gradients of the target class output w.r.t. input_
@@ -247,7 +239,7 @@ class Backprop:
                 module.register_backward_hook(_clip_gradients)
 
 
-# In[32]:
+# In[5]:
 
 
 # def visualize_helper(model_module, tensor=img, k=84):
@@ -256,19 +248,19 @@ class Backprop:
 #     backprop.visualize(tensor, k, guided=True)
 
 
-# In[33]:
+# In[6]:
 
 
 # visualize_helper(models.alexnet)
 
 
-# In[34]:
+# In[7]:
 
 
 # visualize_helper(models.resnet50)
 
 
-# In[37]:
+# In[8]:
 
 
 def visualize_helper_selftrained(model, tensor, k=0):
@@ -278,7 +270,7 @@ def visualize_helper_selftrained(model, tensor, k=0):
     return gradients, max_gradients
 
 
-# In[40]:
+# In[9]:
 
 
 import sys
