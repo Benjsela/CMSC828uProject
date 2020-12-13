@@ -164,7 +164,7 @@ class Backprop:
 
         return gradients
 
-    def visualize(self, input_, target_class, guided=False, use_gpu=False,
+    def visualize(self, input_, target_class, guided=False, use_gpu=True,
                   figsize=(16, 4), cmap='viridis', alpha=.5,
                   return_output=False):
         """Calculates gradients and visualizes the output.
