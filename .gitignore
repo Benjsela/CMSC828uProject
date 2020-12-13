@@ -1,11 +1,17 @@
+*~
+
 # Mac
 .DS_Store
 
 # Jupyter notebook
 .ipynb_checkpoints
 
-networks/trained_networks/*
-
 # Python
 __pycache__/
 *.pyc
+
+# C++
+*.out
+
+networks/trained_networks/*
+
