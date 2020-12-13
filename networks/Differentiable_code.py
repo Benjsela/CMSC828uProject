@@ -170,17 +170,18 @@ optimizer = optim.SGD(model.parameters(), lr=lr, momentum=momentum)
 
 
 def soft_argmax(x):
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     beta = 2
     # x = torch.Tensor(np.array([[.2, .0, .81, .53, .8]]))
     a = torch.exp(beta*x)
     b = torch.sum(torch.exp(beta*x))
 #     print(a,b)
-    softmax = a/b
+    softmax = (a/b).to(device)
     max = torch.sum(softmax*x,1)
 #     print(max)
     pos = x.size()
     
-    softargmax = torch.sum(softmax*torch.arange(0,pos[1]))
+    softargmax = torch.sum(softmax*torch.arange(0,pos[1]).to(device))
     return softargmax
 #     print(pos, softargmax)
 #     mx = softargmax.int()
@@ -234,6 +235,7 @@ class Smooth(object):
         :param batch_size: batch size to use when evaluating the base classifier
         :return: (predicted class, certified radius)
         """
+        device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
         self.sigma = sigma.view(1,28,28)
         self.target = target +0.0
 #         print(target.dtype)
@@ -262,6 +264,7 @@ class Smooth(object):
         x = x.view(1,28,28)
 #         with torch.no_grad():
         counts = 0
+        device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
         for _ in range(ceil(num / batch_size)):
             this_batch_size = min(batch_size, num)
             num -= this_batch_size
@@ -293,16 +296,16 @@ def train_sigma_network(sigma_model, certified_model, device, train_loader, opti
         
         # Find the saliency map and pass that into the network
         for i in range(len(data)):
-            temp_data = data[i][np.newaxis, ...]
+            temp_data = data[i][np.newaxis, ...].to(device)
             gradients, max_gradients = visualize_helper_selftrained(model, tensor=temp_data, k=target[i])
-            max_gradients = max_gradients[np.newaxis, ...]
+            max_gradients = max_gradients[np.newaxis, ...].to(device)
             sigma[i] = torch.abs(sigma_model(max_gradients).view(data[i].shape))
         
         total_loss = 0
         pred_loss = 0
         R_loss = 0
         for i in range(len(data)):
-            pred_score, R = certified_model.certify(data[i],sigma[i],target[i],100,1)
+            pred_score, R = certified_model.certify(data[i].to(device),sigma[i].to(device),target[i].to(device),100,1)
 #             print(R.max(),R.min(), pred_score - target[i])
             pred_loss += torch.abs(pred_score - target[i])#F.mse_loss(pred_score, target[i].int())
             R_loss -= abs(R).mean()
