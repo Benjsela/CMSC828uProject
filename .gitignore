@@ -4,6 +4,8 @@
 # Jupyter notebook
 .ipynb_checkpoints
 
+networks/trained_networks/*
+
 # Python
 __pycache__/
 *.pyc
