@@ -32,6 +32,10 @@ import sys
 sys.path.insert(1, '../saliency')
 from network_saliency import visualize_helper_selftrained 
 
+from typing import Any, Callable, Dict, IO, List, Optional, Tuple, Union
+import os
+from PIL import Image
+
 
 # In[2]:
 
@@ -76,6 +80,63 @@ class FCN(nn.Module):
         x = F.dropout(x, training=self.training)
         x = self.fc3(x)
         return x#F.log_softmax(x, dim=1)
+    
+class MNIST_Extension(datasets.MNIST):
+    resources = [
+        ("http://yann.lecun.com/exdb/mnist/train-images-idx3-ubyte.gz", "f68b3c2dcbeaaa9fbdd348bbdeb94873"),
+        ("http://yann.lecun.com/exdb/mnist/train-labels-idx1-ubyte.gz", "d53e105ee54ea40749a09fcbcd1e9432"),
+        ("http://yann.lecun.com/exdb/mnist/t10k-images-idx3-ubyte.gz", "9fb629c4189551a2d022fa330f9573f3"),
+        ("http://yann.lecun.com/exdb/mnist/t10k-labels-idx1-ubyte.gz", "ec29112dd5afa0611ce80d1b7f02629c")
+    ]
+
+    training_file = 'training.pt'
+    test_file = 'test.pt'
+    classes = ['0 - zero', '1 - one', '2 - two', '3 - three', '4 - four',
+               '5 - five', '6 - six', '7 - seven', '8 - eight', '9 - nine']
+    def __init__(
+            self,
+            root: str,
+            train: bool = True,
+            transform: Optional[Callable] = None,
+            target_transform: Optional[Callable] = None,
+            download: bool = False,
+    ) -> None:
+        super(MNIST_Extension, self).__init__(root, transform=transform,
+                                    target_transform=target_transform, download = download)
+        
+    def _check_exists(self) -> bool:
+        return (os.path.exists(os.path.join(self.processed_folder,
+                                            self.training_file)) and
+                os.path.exists(os.path.join(self.processed_folder,
+                                            self.test_file)))
+    
+    def __getitem__(self, index: int) -> Tuple[Any, Any]:
+        """
+        Args:
+            index (int): Index
+        Returns:
+            tuple: (image, target) where target is index of the target class.
+        """
+        device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+        
+        img, target = self.data[index], int(self.targets[index])
+
+        # doing this so that it is consistent with all other datasets
+        # to return a PIL Image
+        img = Image.fromarray(img.numpy(), mode='L')
+
+        if self.transform is not None:
+            img = self.transform(img)
+
+        if self.target_transform is not None:
+            target = self.target_transform(target)
+            
+        elem = img.to(device)
+        temp_data = elem[np.newaxis, ...]
+        gradients, max_gradients = visualize_helper_selftrained(model, tensor=temp_data, k=target)
+        max_gradients = max_gradients[np.newaxis, ...]
+
+        return (img, max_gradients), target
 
 
 # In[4]:
@@ -287,19 +348,13 @@ class Smooth(object):
 # Batch Training of model
 def train_sigma_network(sigma_model, certified_model, device, train_loader, optimizer, epoch, log_interval):
     sigma_model.train()
-    for batch_idx, (data, target) in enumerate(train_loader):
-        data, target = data.to(device), target.to(device)
+    for batch_idx, ((data, gradient), target) in enumerate(train_loader):
+        data, target, gradient = data.to(device), target.to(device), gradient.to(device)
         target = target + 0.0
         optimizer.zero_grad()
         
         sigma = torch.zeros([len(data),28,28])
-        
-        # Find the saliency map and pass that into the network
-        for i in range(len(data)):
-            temp_data = data[i][np.newaxis, ...].to(device)
-            gradients, max_gradients = visualize_helper_selftrained(model, tensor=temp_data, k=target[i])
-            max_gradients = max_gradients[np.newaxis, ...].to(device)
-            sigma[i] = torch.abs(sigma_model(max_gradients).view(data[i].shape))
+        sigma = torch.abs(sigma_model(gradient).view(sigma.shape))
         
         total_loss = 0
         pred_loss = 0
@@ -353,7 +408,7 @@ l1loss = nn.L1Loss()
 certified_model = Smooth(model) #,torch.abs(sigma_model(inputs)).view(inputs.shape)[0])
 
 train_loader = torch.utils.data.DataLoader(
-    datasets.MNIST('./data', train=True, download=True,
+    MNIST_Extension('./data', train=True, download=True,
                    transform=transforms.Compose([
                        transforms.ToTensor(),
                        transforms.Normalize((0.1307,), (0.3081,))
