@@ -11,6 +11,20 @@ import math
 sns.set()
 
 
+#R is a scaler (only one radius)
+#returns log of volume
+def computeV(n,R):
+    a = math.gamma(n/2+1)
+    p = math.pi
+    numer = (n/2)*np.log(p)
+    den = np.log(a)
+    g = n*np.log(R)
+    ans = numer-den+g
+    return ans
+
+
+
+
 class Accuracy(object):
     def at_radii(self, radii: np.ndarray):
         raise NotImplementedError()
@@ -52,19 +66,33 @@ class Line(object):
         self.plot_fmt = plot_fmt
         self.scale_x = scale_x
 
+        
 
 def plot_certified_accuracy(outfile: str, title: str, max_radius: float,
                             lines: List[Line], radius_step: float = 0.01) -> None:
-    radii = np.arange(0, max_radius + radius_step, radius_step)
+    radii0 = np.arange(0, max_radius + radius_step, radius_step)
+    radii = np.zeros(radii0.size)
+    i = 0
+    for r in radii0:
+        v = computeV(28,r)
+        radii[i] = v
+        i = i+1
+
+    radii = radii0
     plt.figure()
     for line in lines:
+        #print(line.scale_x)
         plt.plot(radii * line.scale_x, line.quantity.at_radii(radii), line.plot_fmt)
 
+    
+   
+        
+        
     plt.ylim((0, 1))
     plt.xlim((0, max_radius))
     plt.tick_params(labelsize=14)
     plt.xlabel("radius", fontsize=16)
-    plt.ylabel("certified accuracy", fontsize=16)
+    plt.ylabel("certified Accuracy", fontsize=16)
     plt.legend([method.legend for method in lines], loc='upper right', fontsize=16)
     plt.savefig(outfile + ".pdf")
     plt.tight_layout()
@@ -119,6 +147,7 @@ def latex_table_certified_accuracy(outfile: str, radius_start: float, radius_sto
         f.write("\\\\\n")
     f.close()
 
+    
 
 def markdown_table_certified_accuracy(outfile: str, radius_start: float, radius_stop: float, radius_step: float,
                                       methods: List[Line]):
