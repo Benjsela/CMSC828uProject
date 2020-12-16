@@ -70,6 +70,7 @@ class Line(object):
 
 def plot_certified_accuracy(outfile: str, title: str, max_radius: float,
                             lines: List[Line], radius_step: float = 0.01) -> None:
+    
     radii0 = np.arange(0, max_radius + radius_step, radius_step)
     radii = np.zeros(radii0.size)
     i = 0
@@ -236,3 +237,9 @@ if __name__ == "__main__":
             Line(ApproximateAccuracy("data/certify/imagenet/resnet50/noise_0.50/test/sigma_0.50"), "Approximate"),
             Line(HighProbAccuracy("data/certify/imagenet/resnet50/noise_0.50/test/sigma_0.50", 0.001, 0.001), "High-Prob"),
         ])
+
+
+    plot_certified_accuracy("outputFile","title",4.0, [Line(ApproximateAccuracy("outputFile"),"Title")])
+
+
+    
