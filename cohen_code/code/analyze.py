@@ -93,7 +93,7 @@ def plot_certified_accuracy(outfile: str, title: str, max_radius: float,
     plt.xlim((0, max_radius))
     plt.tick_params(labelsize=14)
     plt.xlabel("radius", fontsize=16)
-    plt.ylabel("certified Accuracy", fontsize=16)
+    plt.ylabel("certified accuracy", fontsize=16)
     plt.legend([method.legend for method in lines], loc='upper right', fontsize=16)
     plt.savefig(outfile + ".pdf")
     plt.tight_layout()
@@ -239,7 +239,18 @@ if __name__ == "__main__":
         ])
 
 
-    plot_certified_accuracy("outputFile","title",4.0, [Line(ApproximateAccuracy("outputFile"),"Title")])
+    plot_certified_accuracy(
+        "meanRad","",2.0, [
+            Line(ApproximateAccuracy("outputFile"),"multi sigma"),
+            Line(ApproximateAccuracy("mnistCohenOut"),"Cohen sigma=.25")        
+    ])
+
+    plot_certified_accuracy(
+        "minRad","",2.0, [
+            Line(ApproximateAccuracy("minRadius"),"multi sigma"),
+            Line(ApproximateAccuracy("mnistCohenOut"),"Cohen sigma=.25")        
+    ])
+    
 
 
     
