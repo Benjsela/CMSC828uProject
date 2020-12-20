@@ -2,6 +2,7 @@ import torch
 import numpy as np
 import math
 from mpmath import mp
+import matplotlib.pyplot as plt
 
 #predicted targets rmean rmin rmax
 
@@ -57,6 +58,8 @@ def getVolumes():
         Volumes[i] = ans
         print(i)
     return Volumes
+
+
 
 #this is for multi radii    
 def format1():
@@ -130,5 +133,33 @@ def format2():
 
 format1()
 format2()
+
+
+
+def analysis3(name):
+    f = open(name)
+    a = []
+    lines = f.readlines()
+    idx = 0
+    for line in lines:
+        if idx!=0:
+            b = line.split('\t')
+            print(b)
+            r = b[2]
+            r2 = float(r)
+            a.append(r2)
+        idx = idx+1
+    
+    plt.hist(a,bins = 50,histtype="step",label=name)
+    
+    
+
+f1 = "Cohenradius"
+f2 = "minRadius"
+analysis3(f1)
+analysis3(f2)
+plt.legend()
+plt.show()
+
 
 
